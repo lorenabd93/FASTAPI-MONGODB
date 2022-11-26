@@ -10,7 +10,7 @@ import motor.motor_asyncio
 app = FastAPI()
 
 
-MONGODB_URL ='mongodb+srv://JONATHAN:<password>@cluster0.ryjf0bs.mongodb.net/test'
+MONGODB_URL ='mongodb+srv://lorenabd93:Lorena1993@cluster0.4mgxzhi.mongodb.net/test'
 
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 db = client.misiontic
