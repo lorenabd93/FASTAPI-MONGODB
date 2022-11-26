@@ -1,3 +1,4 @@
+
 import os
 from fastapi import FastAPI, Body, HTTPException, status 
 from fastapi.responses import Response, JSONResponse 
@@ -61,7 +62,7 @@ class VehiculoModel(BaseModel):
 
 class UpdateVehiculoModel(BaseModel): 
    Modelo: Optional[str]
-   Marca: Optional[EmailStr] 
+   Marca: Optional[str] 
    Kilometraje: Optional[str] 
    Año: Optional[int]
 
@@ -87,7 +88,7 @@ async def create_vehiculo(vehiculo: VehiculoModel = Body(...)):
 @app.get("/", response_description="List all vehiculos",response_model=List[VehiculoModel] )
 async def list_vehiculos(): 
    vehiculo = await db["catalogo"].find().to_list(1000) 
-   return vehiculos
+   return vehiculo
 
 @app.get("/{id}", response_description="Get a single vehiculo",response_model=VehiculoModel ) 
 async def show_vehiculo(id: str): 
