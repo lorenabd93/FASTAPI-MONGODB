@@ -5,10 +5,18 @@ from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field, EmailStr 
 from bson import ObjectId 
 from typing import Optional, List 
+from fastapi.middleware.cors import CORSMiddleware
 import motor.motor_asyncio
 
-app = FastAPI()
 
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MONGODB_URL ='mongodb+srv://lorenabd93:Lorena1993@cluster0.4mgxzhi.mongodb.net/test'
 
@@ -31,7 +39,7 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema): 
         field_schema.update(type="string")
 
-class StudentModel(BaseModel):
+class VehiculoModel(BaseModel):
    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id") 
    Nombre: str = Field(...)
    email: EmailStr = Field(...) 
@@ -51,7 +59,7 @@ class StudentModel(BaseModel):
            } 
         } 
 
-class UpdateStudentModel(BaseModel): 
+class UpdateVehiculoModel(BaseModel): 
    Nombre: Optional[str]
    email: Optional[EmailStr] 
    Curso: Optional[str] 
@@ -69,50 +77,50 @@ class UpdateStudentModel(BaseModel):
            }  
         }       
 
-@app.post("/", response_description="Add new student",response_model=StudentModel) 
-async def create_student(student: StudentModel = Body(...)): 
-   student = jsonable_encoder(student) 
-   new_student = await db["tripulantes"].insert_one(student) 
-   created_student = await db["tripulantes"].find_one({"_id": new_student.inserted_id}) 
-   return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_student)
+@app.post("/", response_description="Add new vehiculo",response_model=VehiculoModel) 
+async def create_vehiculo(vehiculo: VehiculoModel = Body(...)): 
+   vehiculo = jsonable_encoder(vehiculo) 
+   new_vehiculo = await db["tripulantes"].insert_one(vehiculo) 
+   created_vehiculo = await db["tripulantes"].find_one({"_id": new_vehiculo.inserted_id}) 
+   return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_vehiculo)
 
-@app.get("/", response_description="List all students",response_model=List[StudentModel] )
-async def list_students(): 
-   students = await db["tripulantes"].find().to_list(1000) 
-   return students
+@app.get("/", response_description="List all vehiculos",response_model=List[VehiculoModel] )
+async def list_vehiculos(): 
+   vehiculo = await db["tripulantes"].find().to_list(1000) 
+   return vehiculos
 
-@app.get("/{id}", response_description="Get a single student",response_model=StudentModel ) 
-async def show_student(id: str): 
-    if (student := await db["tripulantes"].find_one({"_id": id})) is not None: 
-        return student
+@app.get("/{id}", response_description="Get a single vehiculo",response_model=VehiculoModel ) 
+async def show_vehiculo(id: str): 
+    if (vehiculo := await db["tripulantes"].find_one({"_id": id})) is not None: 
+        return vehiculo
 
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
+    raise HTTPException(status_code=404, detail=f"Vehiculo {id} not found")
 
-@app.put("/{id}", response_description="Update a student", response_model=StudentModel) 
-async def update_student(id: str, student: UpdateStudentModel = Body(...)): 
-    student = {k: v for k, v in student.dict().items() if v is not None}
+@app.put("/{id}", response_description="Update a vehiculo", response_model=VehiculoModel) 
+async def update_vehiculo(id: str, vehiculo: UpdateVehiculoModel = Body(...)): 
+    vehiculo = {k: v for k, v in vehiculo.dict().items() if v is not None}
 
-    if len(student) >= 1: 
-     update_result = await db["tripulantes"].update_one({"_id": id}, {"$set": student})
+    if len(vehiculo) >= 1: 
+     update_result = await db["tripulantes"].update_one({"_id": id}, {"$set": vehiculo})
      
      if update_result.modified_count == 1: 
             if (
-                updated_student := await db["tripulantes"].find_one({"_id": id})
+                updated_vehiculo := await db["tripulantes"].find_one({"_id": id})
             ) is not None:
-                return updated_student
+                return updated_vehiculo
         
-    if (existing_student := await db["tripulantes"].find_one({"_id": id})) is not None:
-         return existing_student
+    if (existing_vehiculo := await db["tripulantes"].find_one({"_id": id})) is not None:
+         return existing_vehiculo
     
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")
+    raise HTTPException(status_code=404, detail=f"Vehiculo {id} not found")
 
-@app.delete("/{id}", response_description="Delete a student") 
-async def delete_student(id: str): 
+@app.delete("/{id}", response_description="Delete a vehiculo") 
+async def delete_vehiculo(id: str): 
     delete_result = await db["tripulantes"].delete_one({"_id": id}) 
     
     if delete_result.deleted_count == 1: 
         return Response(status_code=status.HTTP_204_NO_CONTENT) 
-    raise HTTPException(status_code=404, detail=f"Student {id} not found")    
+    raise HTTPException(status_code=404, detail=f"Vehiculo {id} not found")    
 
 
 
