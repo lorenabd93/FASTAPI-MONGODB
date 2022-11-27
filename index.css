@@ -1,0 +1,5 @@
+html, body {
+    background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+    background-image: linear-gradient(to right, #a8caba 0%, #5d4157 100%);
+    padding: 0;
+}

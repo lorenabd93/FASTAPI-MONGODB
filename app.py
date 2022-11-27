@@ -43,7 +43,7 @@ class PyObjectId(ObjectId):
 class VehiculoModel(BaseModel):
    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id") 
    Modelo: str = Field("...")
-   Marca: EmailStr = Field("...") 
+   Marca: str = Field("...") 
    Kilometraje: int = Field("...") 
    Año: int = Field("...")
    class Config: 
@@ -61,7 +61,7 @@ class VehiculoModel(BaseModel):
 
 class UpdateVehiculoModel(BaseModel): 
    Modelo: Optional[str]
-   Marca: Optional[EmailStr] 
+   Marca: Optional[str] 
    Kilometraje: Optional[str] 
    Año: Optional[int]
 
