@@ -1,17 +1,15 @@
-
-import os
+import os 
 from fastapi import FastAPI, Body, HTTPException, status 
 from fastapi.responses import Response, JSONResponse 
-from fastapi.encoders import jsonable_encoder 
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, Field, EmailStr 
 from bson import ObjectId 
 from typing import Optional, List 
 from fastapi.middleware.cors import CORSMiddleware
-import motor.motor_asyncio
-
-
+import motor.motor_asyncio 
 
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGODB_URL ='mongodb+srv://lorenabd93:Lorena1993@cluster0.4mgxzhi.mongodb.net/test'
-
+#client = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGODB_URL"]) 
+MONGODB_URL = 'mongodb+srv://lorenabd93:Lorena1993@cluster0.4mgxzhi.mongodb.net/test'
+#MONGODB_URL = "mongodb+srv://dbeetar16:162822@cluster0.u3jbost.mongodb.net/?retryWrites=true&w=majority"
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URL)
 db = client.ventavehiculos
 
@@ -43,18 +42,17 @@ class PyObjectId(ObjectId):
 
 class VehiculoModel(BaseModel):
    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id") 
-   Modelo: str = Field(...)
-   Marca: str = Field(...) 
-   Kilometraje: int = Field(...) 
-   Año: int = Field(..., le=40)
-
+   Modelo: str = Field("...")
+   Marca: EmailStr = Field("...") 
+   Kilometraje: int = Field("...") 
+   Año: int = Field("...")
    class Config: 
        allow_population_by_field_name = True 
        arbitrary_types_allowed = True 
        json_encoders = {ObjectId: str} 
        schema_extra = { 
            "example": { 
-                "Modelo": "Spark",
+                 "Modelo": "Spark",
                 "Marca": "Chevrolet",
                 "Kilometraje": "0",
                 "Año": "2008"
@@ -63,8 +61,8 @@ class VehiculoModel(BaseModel):
 
 class UpdateVehiculoModel(BaseModel): 
    Modelo: Optional[str]
-   Marca: Optional[str] 
-   Kilometraje: Optional[int] 
+   Marca: Optional[EmailStr] 
+   Kilometraje: Optional[str] 
    Año: Optional[int]
 
    class Config: 
@@ -72,24 +70,24 @@ class UpdateVehiculoModel(BaseModel):
        json_encoders = {ObjectId: str} 
        schema_extra = {
            "example": { 
-               "Modelo": "Spark",
+                "Modelo": "Spark",
                 "Marca": "Chevrolet",
                 "Kilometraje": "0",
                 "Año": "2008"
            }  
         }       
 
-@app.post("/", response_description="Add new vehiculo",response_model=VehiculoModel) 
-async def create_vehiculo(vehiculo: VehiculoModel = Body(...)): 
-   vehiculo = jsonable_encoder(vehiculo) 
-   new_vehiculo = await db["catalogo"].insert_one(vehiculo) 
-   created_vehiculo = await db["catalogo"].find_one({"_id": new_vehiculo.inserted_id}) 
-   return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_vehiculo)
+@app.post("/", response_description="Add new Vehiculo",response_model=VehiculoModel) 
+async def create_Vehiculo(Vehiculo: VehiculoModel = Body(...)): 
+   Vehiculo = jsonable_encoder(Vehiculo) 
+   new_Vehiculo = await db["catalogo"].insert_one(Vehiculo) 
+   created_Vehiculo = await db["catalogo"].find_one({"_id": new_Vehiculo.inserted_id}) 
+   return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_Vehiculo)
 
 @app.get("/", response_description="List all vehiculos",response_model=List[VehiculoModel] )
 async def list_vehiculos(): 
-   vehiculo = await db["catalogo"].find().to_list(1000) 
-   return vehiculo
+   vehiculos = await db["catalogo"].find().to_list(1000) 
+   return vehiculos
 
 @app.get("/{id}", response_description="Get a single vehiculo",response_model=VehiculoModel ) 
 async def show_vehiculo(id: str): 
@@ -107,7 +105,7 @@ async def update_vehiculo(id: str, vehiculo: UpdateVehiculoModel = Body(...)):
      
      if update_result.modified_count == 1: 
             if (
-                updated_vehiculo := await db["catalogo"].find_one({"_id": id})
+                updated_vehiculo:= await db["catalogo"].find_one({"_id": id})
             ) is not None:
                 return updated_vehiculo
         
@@ -123,4 +121,8 @@ async def delete_vehiculo(id: str):
     if delete_result.deleted_count == 1: 
         return Response(status_code=status.HTTP_204_NO_CONTENT) 
     raise HTTPException(status_code=404, detail=f"Vehiculo {id} not found")    
+
+
+
+
 
