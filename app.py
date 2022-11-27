@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import motor.motor_asyncio
 
 
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -43,7 +44,7 @@ class PyObjectId(ObjectId):
 class VehiculoModel(BaseModel):
    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id") 
    Modelo: str = Field(...)
-   Marca: EmailStr = Field(...) 
+   Marca: str = Field(...) 
    Kilometraje: int = Field(...) 
    Año: int = Field(..., le=40)
 
@@ -63,7 +64,7 @@ class VehiculoModel(BaseModel):
 class UpdateVehiculoModel(BaseModel): 
    Modelo: Optional[str]
    Marca: Optional[str] 
-   Kilometraje: Optional[str] 
+   Kilometraje: Optional[int] 
    Año: Optional[int]
 
    class Config: 
