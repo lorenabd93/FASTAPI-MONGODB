@@ -1,6 +1,52 @@
 html, body {
-    background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+    background-color: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
     background-image: linear-gradient(to right, #a8caba 0%, #5d4157 100%);
-    padding: 0;
+   
+    padding: 10px;
+    margin:5px;
+    
 }
 
+
+.banner{
+width: 500px;
+height: 200px;
+border:2px solid rgba(0, 47, 255, 0.276);
+margin:auto;
+
+
+background-image: url(img/toyota.jpg);
+
+
+
+
+background-size: 100% 100%;
+animation-name:banner;
+animation-duration:5s;
+animation-iteration-count: infinite;
+
+}
+
+@keyframes banner {
+    0%,30%{
+background-image:url(img/auto.png);
+opacity: 1;
+
+}
+31%, 34%{
+    opacity: 0.1;
+}
+ 35%,65%{
+background-image: url(img/hibrido.jpg);
+opacity:1;
+ }
+ 66%, 69%{
+
+    opacity: 0.1;
+ }
+ 70%,100%{
+    opacity: 1;
+background-image:url(img/volkswagen.jpg);
+
+ }
+}
